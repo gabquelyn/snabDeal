@@ -5,15 +5,20 @@ import errorHandler from "./middlewares/errorHandler";
 import dotenv from "dotenv";
 import connectDB from "./utils/connectDB";
 import mongoose from "mongoose";
-import path from "path"
-import authRouter from "./routes/authRoutes";
+import path from "path";
+import cors from "cors";
+import swaggerUi from "swagger-ui-express";
+import { swaggerOptions } from "./utils/swaggerConfig";
+import swaggerJSDoc from "swagger-jsdoc";
 
 dotenv.config();
 connectDB();
 const app: Express = express();
 const port = process.env.PORT || 8080;
-
+const swaggerDocs = swaggerJSDoc(swaggerOptions);
+app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerDocs));
 app.use(logger);
+app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use("/", express.static(path.join(__dirname, "public")));
@@ -23,8 +28,7 @@ app.use((req: Request, res: Response) => {
   return res.status(200).json({ message: "Welcome to server" });
 });
 
-app.use('/auth', authRouter)
-
+// app.use('/auth', authRouter)
 
 app.use(errorHandler);
 mongoose.connection.on("open", () => {
@@ -41,4 +45,3 @@ mongoose.connection.on("error", (err) => {
     "mongoErr.log"
   );
 });
-
