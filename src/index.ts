@@ -10,6 +10,7 @@ import cors from "cors";
 import swaggerUi from "swagger-ui-express";
 import { swaggerOptions } from "./utils/swaggerConfig";
 import swaggerJSDoc from "swagger-jsdoc";
+import intentRoute from "./routes/intentRoute";
 
 dotenv.config();
 connectDB();
@@ -28,7 +29,7 @@ app.use((req: Request, res: Response) => {
   return res.status(200).json({ message: "Welcome to server" });
 });
 
-// app.use('/auth', authRouter)
+app.use("/intent", intentRoute);
 
 app.use(errorHandler);
 mongoose.connection.on("open", () => {
