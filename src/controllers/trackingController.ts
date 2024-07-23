@@ -24,7 +24,6 @@ export const getPickups = expressAsyncHandler(
       .populate("buyIntent")
       .lean()
       .exec();
-
     return res.status(200).json([...pickups]);
   }
 );

@@ -30,6 +30,7 @@
     "stripe": "^16.2.0",
     "swagger-jsdoc": "^6.2.8",
     "swagger-ui-express": "^5.0.1",
+    "tsoa": "^6.4.0",
     "twilio": "^5.2.2",
     "uuid": "^9.0.1"
   },

@@ -16,4 +16,3 @@ export default async function sendTextMessage(body: string, to: string) {
   }
 }
 
-sendTextMessage("Hello", "+2349039099172");

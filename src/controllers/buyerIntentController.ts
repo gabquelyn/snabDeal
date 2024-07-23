@@ -72,7 +72,7 @@ export const createBuyerIntent = expressAsyncHandler(
         console.log(err);
       }
 
-      return res.status(200).json({
+      return res.status(201).json({
         message: "Intent created for partner and paymnet link sent to buyer",
       });
     }

@@ -10,11 +10,43 @@ import cors from "cors";
 import intentRoute from "./routes/intentRoute";
 import partnerRoute from "./routes/partnerRoute";
 import trackingRoutes from "./routes/trackingRoutes";
+import swaggerJSDoc from 'swagger-jsdoc';
+import swaggerUi from 'swagger-ui-express';
+
+
+const swaggerDefinition = {
+  openapi: '3.0.0',
+  info: {
+    title: 'SnabDeal',
+    version: '1.0.0',
+    description: 'Api endpoints for the SnabDeal',
+  },
+  servers: [
+    {
+      url: `http://localhost:3500`,
+      description: 'Development server',
+    },
+    {
+      url: 'https://snabdeal.onrender.com',
+      description: 'Production server',
+    },
+  ],
+};
+
+const options = {
+  swaggerDefinition,
+  apis: ['./src/routes/*.ts'], // Path to the API docs
+};
+
+const swaggerSpec = swaggerJSDoc(options);
+
 
 dotenv.config();
 connectDB();
 const app: Express = express();
 const port = process.env.PORT || 8080;
+
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 app.use(logger);
 app.use(cors());
 app.use(express.json());
