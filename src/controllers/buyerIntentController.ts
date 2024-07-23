@@ -54,19 +54,23 @@ export const createBuyerIntent = expressAsyncHandler(
         },
       });
 
-      await buyersResponse(
-        {
-          lat: exisitingPartner.address!.lat,
-          lng: exisitingPartner.address!.lng,
-        },
-        { lat, lng },
-        price,
-        name,
-        newBuyerIntenet._id.toString(),
-        phone,
-        tag,
-        partnerId
-      );
+      try {
+        await buyersResponse(
+          {
+            lat: exisitingPartner.address!.lat,
+            lng: exisitingPartner.address!.lng,
+          },
+          { lat, lng },
+          price,
+          name,
+          newBuyerIntenet._id.toString(),
+          phone,
+          tag,
+          partnerId
+        );
+      } catch (err) {
+        console.log(err);
+      }
 
       return res.status(200).json({
         message: "Intent created for partner and paymnet link sent to buyer",
@@ -92,7 +96,9 @@ export const createBuyerIntent = expressAsyncHandler(
       },
     });
 
-    return res.status(200).json({ buyerId: newBuyerIntenet._id });
+    return res.status(200).json({
+      sellerLink: `${process.env.FRONTEND_URL}/seller-form?intent=${newBuyerIntenet._id}`,
+    });
   }
 );
 
@@ -149,6 +155,7 @@ export const confirmBuyerPaymentIntent = expressAsyncHandler(
       return res.status(400).json({ message: `Invalid partner Id, ${id}` });
 
     const sellIntent = await SellerIntent.findOne({ buyIntent }).lean().exec();
+    console.log(sellIntent)
     if (!sellIntent)
       res.status(400).json({
         message: `Seller hasn't responded to buyer's intent, ${buyIntent}. Not sure how you got here`,
@@ -163,7 +170,7 @@ export const confirmBuyerPaymentIntent = expressAsyncHandler(
     if (_session.payment_status === "paid") {
       const scheduledPickup = await Pickup.create({
         sellIntent: sellIntent?._id,
-        parterId: id,
+        partnerId: id,
         buyIntent,
       });
       res.status(200).json({ trackingId: scheduledPickup._id });

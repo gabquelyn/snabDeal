@@ -8,7 +8,7 @@ const pickupSchema = new mongoose.Schema(
       ref: "SellerIntent",
       unique: true,
     },
-    parterId: {
+    partnerId: {
       type: Schema.Types.ObjectId,
       required: false,
       ref: "Partner",

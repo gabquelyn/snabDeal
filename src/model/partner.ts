@@ -47,10 +47,12 @@ const partnerSchema = new mongoose.Schema(
         required: true,
       },
     },
-    documnent: {
-      front: String,
-      back: String,
-    },
+    documnent: [
+      {
+        url: String,
+        id: String,
+      },
+    ],
     payment_method: {
       required: true,
       type: String,

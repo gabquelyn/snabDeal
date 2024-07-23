@@ -12,11 +12,13 @@ export default async function buyersResponse(
   tag: string,
   partnerId?: string
 ) {
+  // instantiate Stripe
   const stripe = new Stripe(process.env.STRIPE_API_KEY!, {
     apiVersion: "2024-06-20",
     appInfo: { name: "SnabDeal" },
   });
   const distance = calculateDistance(source, destination);
+  console.log(distance);
   const priceDetails = [
     {
       price_data: {
@@ -24,7 +26,7 @@ export default async function buyersResponse(
         product_data: {
           name: tag,
         },
-        unit_amount: (price + distance) * 100,
+        unit_amount: Math.round(price + distance) * 100,
       },
       quantity: 1,
     },
@@ -35,10 +37,10 @@ export default async function buyersResponse(
       line_items: priceDetails,
       mode: "payment",
       success_url: `${process.env.FRONTEND_URL}/confirmation/${idempotencyKey}${
-        partnerId && `?id=${partnerId}`
+        partnerId ? `?id=${partnerId}` : ""
       }`,
-      cancel_url: `${process.env.FRONTEND_URL}/buyer-form${
-        partnerId && `?id=${partnerId}`
+      cancel_url: `${process.env.FRONTEND_URL}/${
+        partnerId ? `?id=${partnerId}` : ""
       }`,
     });
     const previousSession = await Session.findOne({
@@ -49,7 +51,7 @@ export default async function buyersResponse(
       sessionId: session.id,
       buyerIntent: idempotencyKey,
     });
-
+    console.log(session.url);
     await sendTextMessage(
       `Hi ${name},\tThe seller has successfully scheduled your order for ${tag}! 🎉\nTo complete your purchase and arrange for swift delivery, please follow the link below to view the order summary and make your payment:\t${session.url}\tThank you for using SnabbDeal! If you have any questions, feel free to reach out.\tBest,The SnabbDeal Team`,
       phone

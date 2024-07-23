@@ -44,7 +44,7 @@ export const createSellerIntent = expressAsyncHandler(
       },
       pickup_time,
       payment_method,
-      buy_intent,
+      buyIntent: existingBuyIntent._id
     });
 
     // calcualte distance, generate and send payment link to the buyer

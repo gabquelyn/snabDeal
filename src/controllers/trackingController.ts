@@ -4,7 +4,12 @@ import Pickup from "../model/pickup";
 export const getPickup = expressAsyncHandler(
   async (req: Request, res: Response): Promise<any> => {
     const { id } = req.params;
-    const existingPickup = await Pickup.findById(id).lean().exec();
+    const existingPickup = await Pickup.findById(id)
+      .populate("sellIntent")
+      .populate("partnerId")
+      .populate("buyIntent")
+      .lean()
+      .exec();
     if (!existingPickup)
       return res.status(404).json({ message: `Tracking not found ${id}` });
     return res.status(200).json({ ...existingPickup });
@@ -15,7 +20,7 @@ export const getPickups = expressAsyncHandler(
   async (req: Request, res: Response): Promise<any> => {
     const pickups = await Pickup.find({})
       .populate("sellIntent")
-      .populate("parterId")
+      .populate("partnerId")
       .populate("buyIntent")
       .lean()
       .exec();
