@@ -46,7 +46,7 @@ connectDB();
 const app: Express = express();
 const port = process.env.PORT || 8080;
 
-app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
+
 app.use(logger);
 app.use(cors());
 app.use(express.json());
@@ -61,9 +61,7 @@ app.use("/partner", partnerRoute);
 app.use("/tracking", trackingRoutes);
 
 
-app.use("/", (req: Request, res: Response) => {
-  return res.status(200).json({ message: "Welcome to server" });
-});
+app.use('/', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 
 app.use(errorHandler);
 mongoose.connection.on("open", () => {
