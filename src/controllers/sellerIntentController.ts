@@ -2,9 +2,12 @@ import expressAsyncHandler from "express-async-handler";
 import BuyerIntent from "../model/buyerIntent";
 import SellerIntent from "../model/sellerIntent";
 import { Request, Response } from "express";
+import { validationResult } from "express-validator";
 import buyersResponse from "../utils/buyersResponse";
 export const createSellerIntent = expressAsyncHandler(
   async (req: Request, res: Response): Promise<any> => {
+    const result = validationResult(req.body);
+    if (!result.isEmpty()) return res.status(500).json(result.array());
     const {
       email,
       name,
@@ -17,13 +20,11 @@ export const createSellerIntent = expressAsyncHandler(
       buy_intent,
     } = req.body;
 
-    const existingBuyIntent = await BuyerIntent.findById(buy_intent)
-      .lean()
-      .exec();
+    const existingBuyIntent = await BuyerIntent.findById(buy_intent).exec();
     if (!existingBuyIntent) {
       return res
         .status(404)
-        .json({ messsage: "invalid link, buyer intent not found" });
+        .json({ messsage: "Invalid link, buyer intent not found" });
     }
 
     if (existingBuyIntent.acknowledged) {
@@ -60,8 +61,23 @@ export const createSellerIntent = expressAsyncHandler(
       existingBuyIntent.item!.tag
     );
 
+    existingBuyIntent.acknowledged = true;
+    await existingBuyIntent.save();
+
     return res.status(201).json({
-      message: `Seller intent R${sellerIntent._id} created successfully`,
+      message: `Seller intent ${sellerIntent._id} created successfully`,
     });
+  }
+);
+
+export const getSellerIntent = expressAsyncHandler(
+  async (req: Request, res: Response): Promise<any> => {
+    const { id } = req.params;
+    const existingSellIntent = await SellerIntent.findById(id)
+      .lean()
+      .exec();
+    if (!existingSellIntent)
+      return res.status(404).json({ message: "Seller Intent not found!" });
+    return res.status(200).json({ ...existingSellIntent });
   }
 );

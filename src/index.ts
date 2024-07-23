@@ -11,6 +11,8 @@ import swaggerUi from "swagger-ui-express";
 import { swaggerOptions } from "./utils/swaggerConfig";
 import swaggerJSDoc from "swagger-jsdoc";
 import intentRoute from "./routes/intentRoute";
+import partnerRoute from "./routes/partnerRoute";
+import trackingRoutes from "./routes/trackingRoutes";
 
 dotenv.config();
 connectDB();
@@ -30,6 +32,8 @@ app.use((req: Request, res: Response) => {
 });
 
 app.use("/intent", intentRoute);
+app.use("/partner", partnerRoute);
+app.use('/tracking', trackingRoutes)
 
 app.use(errorHandler);
 mongoose.connection.on("open", () => {

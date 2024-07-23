@@ -4,6 +4,7 @@ const partnerSchema = new mongoose.Schema(
     email: {
       type: String,
       required: true,
+      unique: true,
     },
     name: {
       type: String,
@@ -37,12 +38,26 @@ const partnerSchema = new mongoose.Schema(
       },
     },
     pickup_time: {
-      required: true,
-      type: Date,
+      from: {
+        type: String,
+        required: true,
+      },
+      to: {
+        type: String,
+        required: true,
+      },
+    },
+    documnent: {
+      front: String,
+      back: String,
     },
     payment_method: {
       required: true,
       type: String,
+    },
+    verified: {
+      type: Boolean,
+      default: false,
     },
   },
   {

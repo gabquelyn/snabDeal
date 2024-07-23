@@ -35,7 +35,7 @@ const sellerIntentSchema = new mongoose.Schema(
       required: true,
       type: String,
     },
-    buy_intent: {
+    buyIntent: {
       type: Schema.Types.ObjectId,
       ref: "BuyerIntent",
       unique: true,

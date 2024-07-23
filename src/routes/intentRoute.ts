@@ -1,26 +1,15 @@
 import { Router } from "express";
 import { body } from "express-validator";
-import { createBuyerIntent } from "../controllers/buyerIntentController";
-import { createSellerIntent } from "../controllers/sellerIntentController";
+import {
+  createBuyerIntent,
+  confirmBuyerPaymentIntent,
+  getBuyerIntent,
+} from "../controllers/buyerIntentController";
+import {
+  createSellerIntent,
+  getSellerIntent,
+} from "../controllers/sellerIntentController";
 const intentRoute = Router();
-
-/**
- * @swagger
- * /intent/buyer:
- *   post:
- *     summary: Create a buyer entry.
- *     description: Create an intent from the buyer.
- *     parameters:
- *         schema:
- *           type: string
- *         required: true
- *         description: Employee ID
- *     responses:
- *       '200':
- *         description: Successfully created buyer's intent and link sent
- *       '500':
- *         description: Internal server error missing required parameters
- */
 intentRoute
   .route("/buyer")
   .post(
@@ -36,6 +25,8 @@ intentRoute
     ],
     createBuyerIntent
   );
+intentRoute.route("/buyer/:id").get(getBuyerIntent);
+intentRoute.route("/buyer/confirm/:buyIntent").get(confirmBuyerPaymentIntent);
 
 intentRoute
   .route("/seller")
@@ -53,5 +44,6 @@ intentRoute
     ],
     createSellerIntent
   );
+intentRoute.route("/seller/:id").get(getSellerIntent);
 
 export default intentRoute;

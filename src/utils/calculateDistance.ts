@@ -28,5 +28,5 @@ export default function calculateDistance(
   // Calculate the distance
   const distance = earthRadius * c;
 
-  return distance; // Distance in kilometers
+  return distance / 1.61; // Distance in kilometers
 }
