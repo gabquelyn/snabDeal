@@ -6,7 +6,7 @@ import {
   createParterController,
   togglePartnerAccess,
 } from "../controllers/partnerControllers";
-const upload = Multer({ dest: "/uploads" });
+const upload = Multer({ dest: "/tmp" });
 const partnerRoute = Router();
 partnerRoute
   .route("/")
