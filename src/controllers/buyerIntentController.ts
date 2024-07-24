@@ -110,9 +110,7 @@ export const getBuyerIntent = expressAsyncHandler(
       return res
         .status(404)
         .json({ message: "Intent not found, invalid link!" });
-    if (existingBuyerIntent.acknowledged) {
-      return res.status(400).json({ message: "Bad request, invalid link" });
-    }
+    return res.status(200).json({ ...existingBuyerIntent });
   }
 );
 
@@ -136,7 +134,7 @@ export const confirmBuyerPaymentIntent = expressAsyncHandler(
       .lean()
       .exec();
     if (scheduledPickup)
-      return res.status(400).json({ message: "Pickup already scheduled" });
+      return res.status(501).json({ message: "Pickup already scheduled" });
 
     const buyerPaymentSession = await Session.findOne({
       buyerIntent: buyIntent,
@@ -146,7 +144,7 @@ export const confirmBuyerPaymentIntent = expressAsyncHandler(
 
     if (!buyerPaymentSession)
       return res
-        .status(400)
+        .status(404)
         .json({ message: "Buyer didn't complete the payment" });
 
     // check for the partner name in the query parameters
@@ -155,7 +153,7 @@ export const confirmBuyerPaymentIntent = expressAsyncHandler(
       return res.status(400).json({ message: `Invalid partner Id, ${id}` });
 
     const sellIntent = await SellerIntent.findOne({ buyIntent }).lean().exec();
-    console.log(sellIntent)
+    console.log(sellIntent);
     if (!sellIntent)
       res.status(400).json({
         message: `Seller hasn't responded to buyer's intent, ${buyIntent}. Not sure how you got here`,
