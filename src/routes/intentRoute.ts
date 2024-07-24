@@ -273,7 +273,7 @@ intentRoute.route("/buyer/confirm/:buyIntent").get(confirmBuyerPaymentIntent);
  *       400:
  *         description: Bad request.
  *       201:
- *         description: Seller's intent created successfully
+ *         description: Seller's intent has been created successfully
  *       501:
  *         description: Internal server error
  */
