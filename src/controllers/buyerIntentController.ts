@@ -54,8 +54,9 @@ export const createBuyerIntent = expressAsyncHandler(
         },
       });
 
+      let url;
       try {
-        await buyersResponse(
+        url = await buyersResponse(
           {
             lat: exisitingPartner.address!.lat,
             lng: exisitingPartner.address!.lng,
@@ -74,6 +75,7 @@ export const createBuyerIntent = expressAsyncHandler(
 
       return res.status(201).json({
         message: "Intent created for partner and paymnet link sent to buyer",
+        payment_url: url,
       });
     }
 

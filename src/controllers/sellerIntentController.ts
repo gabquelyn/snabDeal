@@ -44,11 +44,11 @@ export const createSellerIntent = expressAsyncHandler(
       },
       pickup_time,
       payment_method,
-      buyIntent: existingBuyIntent._id
+      buyIntent: existingBuyIntent._id,
     });
 
     // calcualte distance, generate and send payment link to the buyer
-    await buyersResponse(
+    const url = await buyersResponse(
       {
         lat: existingBuyIntent.address!.lat,
         lng: existingBuyIntent.address!.lng,
@@ -66,6 +66,7 @@ export const createSellerIntent = expressAsyncHandler(
 
     return res.status(201).json({
       message: `Seller intent ${sellerIntent._id} created successfully`,
+      payment_url: url,
     });
   }
 );
@@ -73,9 +74,7 @@ export const createSellerIntent = expressAsyncHandler(
 export const getSellerIntent = expressAsyncHandler(
   async (req: Request, res: Response): Promise<any> => {
     const { id } = req.params;
-    const existingSellIntent = await SellerIntent.findById(id)
-      .lean()
-      .exec();
+    const existingSellIntent = await SellerIntent.findById(id).lean().exec();
     if (!existingSellIntent)
       return res.status(404).json({ message: "Seller Intent not found!" });
     return res.status(200).json({ ...existingSellIntent });

@@ -11,7 +11,7 @@ export default async function buyersResponse(
   phone: string,
   tag: string,
   partnerId?: string
-) {
+): Promise<string | null | undefined> {
   // instantiate Stripe
   const stripe = new Stripe(process.env.STRIPE_API_KEY!, {
     apiVersion: "2024-06-20",
@@ -56,6 +56,7 @@ export default async function buyersResponse(
       `Hi ${name},\tThe seller has successfully scheduled your order for ${tag}! 🎉\nTo complete your purchase and arrange for swift delivery, please follow the link below to view the order summary and make your payment:\t${session.url}\tThank you for using SnabbDeal! If you have any questions, feel free to reach out.\tBest,The SnabbDeal Team`,
       phone
     );
+    return session.url;
   } catch (err) {
     console.log(err);
   }
