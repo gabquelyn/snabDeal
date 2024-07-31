@@ -82,6 +82,46 @@ trackingRoutes.route("/").get(getPickups);
  *                  description: The status of the pickup
  *
  */
+
+/**
+ * @swagger
+ * /tracking/{id}:
+ *   patch:
+ *     summary: Change the state of a pickup.
+ *     description: Changes the state of the pickup by the id.
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         schema:
+ *           type: string
+ *         required: true
+ *         description: The ID of the pickup whose state is to be changed.
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         multipart/form-data:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               status:
+ *                 type: string
+ *                 description: The status of the pickup.
+ *                 example: enroute
+ *               proof:
+ *                 type: object
+ *                 format: file
+ *                 description: The file to upload, image.
+ *     responses:
+ *       400:
+ *         description: Bad status of pickup
+ *       404:
+ *         description: Pickup not found
+ *       502:
+ *         description: Submit file proof
+ *       200:
+ *         description: Successfully changed the state of the pickup.
+ *
+ */
 trackingRoutes
   .route("/:id")
   .get(getPickup)

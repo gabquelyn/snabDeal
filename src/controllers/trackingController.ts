@@ -49,7 +49,7 @@ export const changePickupState = expressAsyncHandler(
         .lean()
         .exec();
       if (!req.file) {
-        return res.status(400).json({ message: "Submit proof file" });
+        return res.status(502).json({ message: "Submit proof file" });
       }
       cloudinary.config({
         cloud_name: process.env.CLOUDINARY_NAME,
