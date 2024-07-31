@@ -4,6 +4,8 @@ import Pickup from "../model/pickup";
 import { v2 as cloudinary } from "cloudinary";
 import util from "util";
 import fs from "fs";
+import sendTextMessage from "../utils/sendTextMessage";
+import BuyerIntent from "../model/buyerIntent";
 export const getPickup = expressAsyncHandler(
   async (req: Request, res: Response): Promise<any> => {
     const { id } = req.params;
@@ -43,6 +45,9 @@ export const changePickupState = expressAsyncHandler(
 
     if (status == "delivered") {
       // require them to upload an image for proof
+      const buyerIntent = await BuyerIntent.findById(pickup.buyIntent)
+        .lean()
+        .exec();
       if (!req.file) {
         return res.status(400).json({ message: "Submit proof file" });
       }
@@ -64,6 +69,17 @@ export const changePickupState = expressAsyncHandler(
         console.log(imageData);
         pickup.image = imageData;
         await pickup.save();
+        await sendTextMessage(
+          `Hi ${
+            buyerIntent!.name
+          },\nYour package has been successfully delivered! 🎉📦\tHere's an image of your delivered item: ${
+            result.secure_url
+          }\nWe hope you're happy with our service! If you have a moment, we'd love for you to leave us a review at the link below ${
+            process.env.FRONTEND_URL + "/testimony/" + pickup._id
+          } \tThank you for choosing SnabbDeal!
+          \tBest, The SnabbDeal Team`,
+          buyerIntent!.phone
+        );
       });
     }
     pickup.status = status;

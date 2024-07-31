@@ -12,7 +12,7 @@ import partnerRoute from "./routes/partnerRoute";
 import trackingRoutes from "./routes/trackingRoutes";
 import swaggerJSDoc from 'swagger-jsdoc';
 import swaggerUi from 'swagger-ui-express';
-
+import testimonialRoutes from "./routes/testimonialRoute";
 
 const swaggerDefinition = {
   openapi: '3.0.0',
@@ -59,7 +59,7 @@ app.use(cookierParser());
 app.use("/intent", intentRoute);
 app.use("/partner", partnerRoute);
 app.use("/tracking", trackingRoutes);
-
+app.use('/testimonial', testimonialRoutes)
 
 app.use('/', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 
