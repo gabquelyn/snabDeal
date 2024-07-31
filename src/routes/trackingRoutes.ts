@@ -4,6 +4,8 @@ import {
   getPickups,
   changePickupState,
 } from "../controllers/trackingController";
+import Multer from "multer";
+const upload = Multer({ dest: "/tmp" });
 const trackingRoutes = Router();
 
 /**
@@ -15,7 +17,7 @@ const trackingRoutes = Router();
  *     parameters:
  *        required: false
  *     responses:
- *       500: 
+ *       500:
  *         description: Internal server error
  *       200:
  *         description: Successful response with all pickups.
@@ -39,7 +41,7 @@ const trackingRoutes = Router();
  *                   status:
  *                     type: string
  *                     description: The status of the pickup
- *     
+ *
  */
 trackingRoutes.route("/").get(getPickups);
 
@@ -50,14 +52,14 @@ trackingRoutes.route("/").get(getPickups);
  *     summary: Get a pickup by its Id.
  *     description: Returns the details of a particular pickup.
  *     parameters:
-  *       - in: path
+ *       - in: path
  *         name: id
  *         schema:
  *           type: string
  *         required: true
  *         description: The ID of the pickup which details are to be retrieved.
  *     responses:
- *       500: 
+ *       500:
  *         description: Internal server error
  *       200:
  *         description: Successful response with all pickups.
@@ -78,8 +80,11 @@ trackingRoutes.route("/").get(getPickups);
  *                status:
  *                  type: string
  *                  description: The status of the pickup
- *     
+ *
  */
-trackingRoutes.route("/:id").get(getPickup).patch(changePickupState);
+trackingRoutes
+  .route("/:id")
+  .get(getPickup)
+  .patch(upload.single("proof"), changePickupState);
 
 export default trackingRoutes;

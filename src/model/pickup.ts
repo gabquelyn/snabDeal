@@ -21,8 +21,12 @@ const pickupSchema = new mongoose.Schema(
     },
     status: {
       required: true,
-      default: "Acknowledged",
+      default: "pending",
       type: String,
+    },
+    image: {
+      url: String,
+      id: String,
     },
   },
   {
