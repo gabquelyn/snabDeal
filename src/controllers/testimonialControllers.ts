@@ -3,6 +3,8 @@ import { Request, Response } from "express";
 import { validationResult } from "express-validator";
 import Testimonial from "../model/testimonial";
 import Pickup from "../model/pickup";
+
+
 export const getTestimonials = expressAsyncHandler(
   async (req: Request, res: Response): Promise<any> => {
     const testimonials = await Testimonial.find({}).lean().exec();
@@ -18,7 +20,7 @@ export const createTestimonials = expressAsyncHandler(
     const { id } = req.params;
     const exisitingPickup = await Pickup.findById(id).lean().exec();
     if (!exisitingPickup)
-      return res.status(400).json({ message: "Pickup not found" });
+      return res.status(404).json({ message: "Pickup not found" });
     await Testimonial.create({
       name,
       testimonial,
