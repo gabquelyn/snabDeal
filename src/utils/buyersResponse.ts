@@ -12,6 +12,7 @@ export default async function buyersResponse(
   tag: string,
   partnerId?: string
 ): Promise<string | null | undefined> {
+  
   // instantiate Stripe
   const stripe = new Stripe(process.env.STRIPE_API_KEY!, {
     apiVersion: "2024-06-20",
@@ -26,7 +27,7 @@ export default async function buyersResponse(
         product_data: {
           name: tag,
         },
-        unit_amount: Math.round(price + distance) * 100,
+        unit_amount: Math.round(price + (distance > 6 ? 12 : 5)) * 100,
       },
       quantity: 1,
     },

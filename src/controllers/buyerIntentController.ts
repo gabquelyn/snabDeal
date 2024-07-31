@@ -125,9 +125,7 @@ export const confirmBuyerPaymentIntent = expressAsyncHandler(
 
     const { buyIntent } = req.params;
     const { id } = req.query;
-    const exisitingBuyIntent = await BuyerIntent.findById(buyIntent)
-      .lean()
-      .exec();
+    const exisitingBuyIntent = await BuyerIntent.findById(buyIntent).exec();
     if (!exisitingBuyIntent)
       return res.status(404).json({ message: "Buyer intent not found!" });
     const scheduledPickup = await Pickup.findOne({
@@ -173,9 +171,23 @@ export const confirmBuyerPaymentIntent = expressAsyncHandler(
         partnerId: id,
         buyIntent,
       });
-      res.status(200).json({ trackingId: scheduledPickup._id });
+
+      exisitingBuyIntent.paid = true;
+      await exisitingBuyIntent.save();
+      return res.status(200).json({ trackingId: scheduledPickup._id });
     } else {
       res.status(400).json({ messsage: "Payment not successfull" });
     }
+  }
+);
+
+export const getUnscheduledPickups = expressAsyncHandler(
+  async (req: Request, res: Response): Promise<any> => {
+    const unscheduledPickups = await BuyerIntent.find({
+      where: { paid: false, acknowledged: true },
+    })
+      .lean()
+      .exec();
+    return res.status(200).json([...unscheduledPickups])
   }
 );

@@ -190,8 +190,6 @@ partnerRoute
  */
 
 
-
-
 /**
  * @swagger
  * /partner/action/{id}:

@@ -43,6 +43,10 @@ const buyerIntentSchema = new mongoose.Schema(
       type: Boolean,
       default: false,
     },
+    paid: {
+      type: Boolean,
+      default: false,
+    },
   },
   {
     timestamps: true,

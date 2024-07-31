@@ -4,6 +4,7 @@ import {
   createBuyerIntent,
   confirmBuyerPaymentIntent,
   getBuyerIntent,
+  getUnscheduledPickups,
 } from "../controllers/buyerIntentController";
 import {
   createSellerIntent,
@@ -171,7 +172,11 @@ intentRoute
  *         description: Internal sever error
  */
 
+
+
+intentRoute.route("/buyer/unscheduled").get(getUnscheduledPickups);
 intentRoute.route("/buyer/:id").get(getBuyerIntent);
+
 
 /**
  * @swagger
@@ -216,7 +221,6 @@ intentRoute.route("/buyer/:id").get(getBuyerIntent);
  */
 intentRoute.route("/buyer/confirm/:buyIntent").get(confirmBuyerPaymentIntent);
 
-
 /**
  * @swagger
  * /intent/seller:
@@ -258,7 +262,7 @@ intentRoute.route("/buyer/confirm/:buyIntent").get(confirmBuyerPaymentIntent);
  *                 type: string
  *                 format: date
  *                 description: The time scheduled for pickup.
- *                 example: 
+ *                 example:
  *               payment_method:
  *                 type: string
  *                 description: The preffered payment method of the seller.
@@ -293,9 +297,6 @@ intentRoute
     ],
     createSellerIntent
   );
-
-
-
 
 /**
  * @swagger
@@ -361,5 +362,6 @@ intentRoute
  *         description: Internal sever error
  */
 intentRoute.route("/seller/:id").get(getSellerIntent);
+
 
 export default intentRoute;
