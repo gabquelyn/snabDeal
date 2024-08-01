@@ -188,6 +188,25 @@ export const getUnscheduledPickups = expressAsyncHandler(
     })
       .lean()
       .exec();
-    return res.status(200).json([...unscheduledPickups])
+    return res.status(200).json([...unscheduledPickups]);
+  }
+);
+
+export const patchBuyerIntentController = expressAsyncHandler(
+  async (req: Request, res: Response): Promise<any> => {
+    const { id } = req.params;
+    const { email, name, location, lng, lat, phone } = req.body;
+    const existingBuyerIntent = await BuyerIntent.findById(id).exec();
+    if (!existingBuyerIntent)
+      return res.status(404).json({ message: "buyer intent not found" });
+    existingBuyerIntent.email = email;
+    existingBuyerIntent.name = name;
+    existingBuyerIntent.phone = phone;
+    existingBuyerIntent.address = {
+      location,
+      lng,
+      lat,
+    };
+    await existingBuyerIntent.save();
   }
 );

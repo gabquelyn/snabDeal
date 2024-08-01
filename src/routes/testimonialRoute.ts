@@ -8,9 +8,18 @@ const testimonialRoutes = Router();
 
 /**
  * @swagger
+ * tags:
+ *   - name: Testimonial
+ *     description: Operations about testimonials
+ */
+
+/**
+ * @swagger
  * /testimonial:
  *   get:
  *     summary: Get all the testimonials.
+ *     tags:
+ *       - Testimonial
  *     description: Returns all the testimonials in the database.
  *     parameters:
  *        required: false
@@ -54,6 +63,8 @@ testimonialRoutes.route("/").get(getTestimonials);
  * /testimonial/{pickupId}:
  *   post:
  *     summary: Create a new testimonial for a pickup.
+ *     tags:
+ *       - Testimonial
  *     description: Create a new buyer intent with the provided information.
  *     parameters:
  *       - in: path

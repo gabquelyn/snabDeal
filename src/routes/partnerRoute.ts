@@ -11,9 +11,18 @@ const partnerRoute = Router();
 
 /**
  * @swagger
+ * tags:
+ *   - name: Partner
+ *     description: Operations about partners
+ */
+
+/**
+ * @swagger
  * /partner:
  *   post:
  *     summary: Create a new partner.
+ *     tags:
+ *       - Partner
  *     description: Create a partner with the provided information and files.
  *     requestBody:
  *       required: true
@@ -113,6 +122,8 @@ partnerRoute
  * /partner:
  *   get:
  *     summary: Get all the partners.
+ *     tags:
+ *       - Partner
  *     description: Returns all the partners.
  *     parameters:
  *        required: false
@@ -189,12 +200,13 @@ partnerRoute
  *                       example: https://somelink.com
  */
 
-
 /**
  * @swagger
  * /partner/action/{id}:
  *   patch:
  *     summary: Approve or Disapprove a partner.
+ *     tags:
+ *       - Partner
  *     description: Approves a partner to make his link active.
  *     parameters:
  *       - in: path

@@ -31,6 +31,12 @@ const swaggerDefinition = {
       description: 'Production server',
     },
   ],
+  tags: [
+    {
+      name: 'Intents',
+      description: 'Operations about buyer and seller intents'
+    },
+  ],
 };
 
 const options = {

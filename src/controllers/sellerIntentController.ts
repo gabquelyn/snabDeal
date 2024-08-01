@@ -81,4 +81,21 @@ export const getSellerIntent = expressAsyncHandler(
   }
 );
 
-
+export const patchSellerIntentController = expressAsyncHandler(
+  async (req: Request, res: Response): Promise<any> => {
+    const { id } = req.params;
+    const { email, name, location, lng, lat, phone } = req.body;
+    const existingSellerIntent = await SellerIntent.findById(id).exec();
+    if (!existingSellerIntent)
+      return res.status(404).json({ message: "Seller intent not found" });
+    existingSellerIntent.email = email;
+    existingSellerIntent.name = name;
+    existingSellerIntent.phone = phone;
+    existingSellerIntent.address = {
+      location,
+      lng,
+      lat,
+    };
+    await existingSellerIntent.save();
+  }
+);

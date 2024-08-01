@@ -5,18 +5,29 @@ import {
   confirmBuyerPaymentIntent,
   getBuyerIntent,
   getUnscheduledPickups,
+  patchBuyerIntentController,
 } from "../controllers/buyerIntentController";
 import {
   createSellerIntent,
   getSellerIntent,
+  patchSellerIntentController,
 } from "../controllers/sellerIntentController";
 const intentRoute = Router();
+
+/**
+ * @swagger
+ * tags:
+ *   - name: Intents
+ *     description: Operations about buyer and seller intents
+ */
 
 /**
  * @swagger
  * /intent/buyer:
  *   post:
  *     summary: Create a new buyer intent.
+ *     tags:
+ *       - Intents
  *     description: Create a new buyer intent with the provided information.
  *     requestBody:
  *       required: true
@@ -101,6 +112,8 @@ intentRoute
  * /intent/buyer/{id}:
  *   get:
  *     summary: Get the details of a buyer intent.
+ *     tags:
+ *       - Intents
  *     description: Returns the information of a buyer's intent.
  *     parameters:
  *       - in: path
@@ -172,17 +185,73 @@ intentRoute
  *         description: Internal sever error
  */
 
-
-
+/**
+ * @swagger
+ * /intent/buyer/{id}:
+ *   patch:
+ *     summary: Edit the details of a buyer intent.
+ *     tags:
+ *       - Intents
+ *     description: Edit the information of a buyer's intent.
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         schema:
+ *           type: string
+ *         required: true
+ *         description: The ID of the buyer's intent which details are to be edited
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               name:
+ *                 type: string
+ *                 description: The buyer's name.
+ *                 example: John Doe
+ *               email:
+ *                 type: string
+ *                 description: The buyer's email.
+ *                 example: john.doe@example.com
+ *               phone:
+ *                 type: string
+ *                 description: The buyer's phone number.
+ *                 example: +34 434343 4343 4343 4
+ *               location:
+ *                 type: string
+ *                 description: The address of the buyer.
+ *                 example: some place on earth
+ *               lng:
+ *                 type: number
+ *                 description: The longitude of the buyer's location.
+ *                 example: 20.0001
+ *               lat:
+ *                 type: number
+ *                 description: The latitude of the buyer's location.
+ *                 example: 19.0002
+ *     responses:
+ *       404:
+ *         description: Buyer intent not found
+ *       200:
+ *         description: Buyer's intent edited successfully
+ *       501:
+ *         description: Internal server error
+ */
 intentRoute.route("/buyer/unscheduled").get(getUnscheduledPickups);
-intentRoute.route("/buyer/:id").get(getBuyerIntent);
-
+intentRoute
+  .route("/buyer/:id")
+  .get(getBuyerIntent)
+  .patch(patchBuyerIntentController);
 
 /**
  * @swagger
  * /intent/buyer/confirm/{buyIntent}:
  *   get:
  *     summary: Get the details of a buyer intent.
+ *     tags:
+ *       - Intents
  *     description: Returns the information of a buyer's intent.
  *     parameters:
  *       - in: path
@@ -226,6 +295,8 @@ intentRoute.route("/buyer/confirm/:buyIntent").get(confirmBuyerPaymentIntent);
  * /intent/seller:
  *   post:
  *     summary: Create a new seller intent as, a response to a buyer intent.
+ *     tags:
+ *       - Intents
  *     description: Create a new seller intent with the provided information.
  *     requestBody:
  *       required: true
@@ -303,6 +374,8 @@ intentRoute
  * /intent/seller/{id}:
  *   get:
  *     summary: Get the details of a seller intent.
+ *     tags:
+ *       - Intents
  *     description: Returns the information of a seller's intent.
  *     parameters:
  *       - in: path
@@ -361,7 +434,63 @@ intentRoute
  *       500:
  *         description: Internal sever error
  */
-intentRoute.route("/seller/:id").get(getSellerIntent);
-
+/**
+ * @swagger
+ * /intent/seller/{id}:
+ *   patch:
+ *     summary: Edit the details of a seller intent.
+ *     tags:
+ *       - Intents
+ *     description: Edit the information of a seller's intent.
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         schema:
+ *           type: string
+ *         required: true
+ *         description: The ID of the seller's intent which details are to be edited
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               name:
+ *                 type: string
+ *                 description: The seller's name.
+ *                 example: John Doe
+ *               email:
+ *                 type: string
+ *                 description: The seller's email.
+ *                 example: john.doe@example.com
+ *               phone:
+ *                 type: string
+ *                 description: The seller's phone number.
+ *                 example: +34 434343 4343 4343 4
+ *               location:
+ *                 type: string
+ *                 description: The address of the seller.
+ *                 example: some place on earth
+ *               lng:
+ *                 type: number
+ *                 description: The longitude of the seller's location.
+ *                 example: 20.0001
+ *               lat:
+ *                 type: number
+ *                 description: The latitude of the seller's location.
+ *                 example: 19.0002
+ *     responses:
+ *       404:
+ *         description: Seller intent not found
+ *       200:
+ *         description: Seller's intent edited successfully
+ *       501:
+ *         description: Internal server error
+ */
+intentRoute
+  .route("/seller/:id")
+  .get(getSellerIntent)
+  .patch(patchSellerIntentController);
 
 export default intentRoute;

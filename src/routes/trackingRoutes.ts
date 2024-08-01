@@ -10,9 +10,18 @@ const trackingRoutes = Router();
 
 /**
  * @swagger
+ * tags:
+ *   - name: Pickup
+ *     description: Operations about pickup
+ */
+
+/**
+ * @swagger
  * /tracking:
  *   get:
  *     summary: Get all the pickups.
+ *     tags:
+ *       - Pickup
  *     description: Returns all the pickups in the database.
  *     parameters:
  *        required: false
@@ -50,6 +59,8 @@ trackingRoutes.route("/").get(getPickups);
  * /tracking/{id}:
  *   get:
  *     summary: Get a pickup by its Id.
+ *     tags:
+ *       - Pickup
  *     description: Returns the details of a particular pickup.
  *     parameters:
  *       - in: path
@@ -88,6 +99,8 @@ trackingRoutes.route("/").get(getPickups);
  * /tracking/{id}:
  *   patch:
  *     summary: Change the state of a pickup.
+ *     tags:
+ *       - Pickup
  *     description: Changes the state of the pickup by the id.
  *     parameters:
  *       - in: path
