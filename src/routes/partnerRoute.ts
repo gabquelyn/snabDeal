@@ -128,7 +128,8 @@ partnerRoute
  *     parameters:
  *        required: false
  *     responses:
- *       500: Internal server error
+ *       500: 
+ *         description: Internal server error
  *       200:
  *         description: Successful response with partner details.
  *         content:
