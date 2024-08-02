@@ -148,17 +148,21 @@ export const confirmBuyerPaymentIntent = expressAsyncHandler(
         .json({ message: "Buyer didn't complete the payment" });
 
     // check for the partner name in the query parameters
-    const partner = await Partner.findById(id).lean().exec();
-    if (id && !partner)
-      return res.status(400).json({ message: `Invalid partner Id, ${id}` });
-
-    const sellIntent = await SellerIntent.findOne({ buyIntent }).lean().exec();
-    console.log(sellIntent);
-    if (!sellIntent)
-      res.status(400).json({
-        message: `Seller hasn't responded to buyer's intent, ${buyIntent}. Not sure how you got here`,
-      });
-
+    let sellIntentId;
+    if (id) {
+      const partner = await Partner.findById(id).lean().exec();
+      if (!partner)
+        return res.status(400).json({ message: `Invalid partner Id, ${id}` });
+    } else {
+      const sellIntent = await SellerIntent.findOne({ buyIntent })
+        .lean()
+        .exec();
+      sellIntentId = sellIntent?._id;
+      if (!sellIntent)
+        res.status(400).json({
+          message: `Seller hasn't responded to buyer's intent, ${buyIntent}. Not sure how you got here`,
+        });
+    }
     // check the status of the payment and if successfull create a pickup for admin to see
 
     const _session = await stripe.checkout.sessions.retrieve(
@@ -167,7 +171,7 @@ export const confirmBuyerPaymentIntent = expressAsyncHandler(
 
     if (_session.payment_status === "paid") {
       const scheduledPickup = await Pickup.create({
-        sellIntent: sellIntent?._id,
+        sellIntent: sellIntentId,
         partnerId: id,
         buyIntent,
       });
