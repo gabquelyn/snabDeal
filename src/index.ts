@@ -36,6 +36,18 @@ const swaggerDefinition = {
       name: 'Intents',
       description: 'Operations about buyer and seller intents'
     },
+    {
+      name: 'Partner',
+      description: 'Operations about partners'
+    },
+    {
+      name: 'Testimonial',
+      description: 'Operations about testimonials'
+    },
+    {
+      name: 'Pickup',
+      description: 'Operations about pickup'
+    },
   ],
 };
 

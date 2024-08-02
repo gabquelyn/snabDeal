@@ -6,7 +6,6 @@ const pickupSchema = new mongoose.Schema(
       type: Schema.Types.ObjectId,
       required: false,
       ref: "SellerIntent",
-      unique: true,
     },
     partnerId: {
       type: Schema.Types.ObjectId,
@@ -17,7 +16,6 @@ const pickupSchema = new mongoose.Schema(
       type: Schema.Types.ObjectId,
       required: true,
       ref: "BuyerIntent",
-      unique: true,
     },
     status: {
       required: true,
