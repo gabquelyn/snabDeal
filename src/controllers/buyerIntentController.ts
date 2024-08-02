@@ -8,6 +8,7 @@ import Session from "../model/session";
 import Stripe from "stripe";
 import Pickup from "../model/pickup";
 import SellerIntent from "../model/sellerIntent";
+import mongoose from "mongoose";
 
 export const createBuyerIntent = expressAsyncHandler(
   async (req: Request, res: Response): Promise<any> => {
@@ -171,10 +172,11 @@ export const confirmBuyerPaymentIntent = expressAsyncHandler(
 
     if (_session.payment_status === "paid") {
       const scheduledPickup = await Pickup.create({
-        sellIntent: sellIntentId,
-        partnerId: id,
         buyIntent,
       });
+      if (id)
+        scheduledPickup.partnerId = new mongoose.Types.ObjectId(id as string);
+      if (sellIntentId) scheduledPickup.sellIntent = sellIntentId;
 
       exisitingBuyIntent.paid = true;
       await exisitingBuyIntent.save();
