@@ -177,6 +177,7 @@ export const confirmBuyerPaymentIntent = expressAsyncHandler(
       if (id)
         scheduledPickup.partnerId = new mongoose.Types.ObjectId(id as string);
       if (sellIntentId) scheduledPickup.sellIntent = sellIntentId;
+      await scheduledPickup.save();
 
       exisitingBuyIntent.paid = true;
       await exisitingBuyIntent.save();
