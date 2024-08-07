@@ -216,6 +216,7 @@ export const patchBuyerIntentController = expressAsyncHandler(
       lat,
     };
     await existingBuyerIntent.save();
+    return res.status(200).json({ messsage: "Updated successfully" });
   }
 );
 

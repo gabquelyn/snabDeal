@@ -97,5 +97,6 @@ export const patchSellerIntentController = expressAsyncHandler(
       lat,
     };
     await existingSellerIntent.save();
+    return res.status(200).json({ messsage: "Updated successfully" });
   }
 );
