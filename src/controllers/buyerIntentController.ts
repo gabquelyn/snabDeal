@@ -191,7 +191,8 @@ export const confirmBuyerPaymentIntent = expressAsyncHandler(
 export const getUnscheduledPickups = expressAsyncHandler(
   async (req: Request, res: Response): Promise<any> => {
     const unscheduledPickups = await BuyerIntent.find({
-      where: { paid: false, acknowledged: true },
+      paid: false,
+      acknowledged: true,
     })
       .lean()
       .exec();
@@ -215,5 +216,22 @@ export const patchBuyerIntentController = expressAsyncHandler(
       lat,
     };
     await existingBuyerIntent.save();
+  }
+);
+
+export const getSellIntentForBuyer = expressAsyncHandler(
+  async (req: Request, res: Response): Promise<any> => {
+    const { id } = req.params;
+    const sellIntent = await SellerIntent.findOne({
+      buyIntent: id,
+    })
+      .lean()
+      .exec();
+    console.log(sellIntent);
+    if (!sellIntent)
+      return res
+        .status(404)
+        .json({ message: "Sell intent not found for buyer's intent" });
+    return res.status(200).json({ ...sellIntent });
   }
 );

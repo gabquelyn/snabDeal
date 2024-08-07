@@ -6,6 +6,7 @@ import {
   getBuyerIntent,
   getUnscheduledPickups,
   patchBuyerIntentController,
+  getSellIntentForBuyer,
 } from "../controllers/buyerIntentController";
 import {
   createSellerIntent,
@@ -239,6 +240,41 @@ intentRoute
  *       501:
  *         description: Internal server error
  */
+
+/**
+ * @swagger
+ * /intent/buyer/unscheduled:
+ *   get:
+ *     summary: Get the details of a unscheduled pickups.
+ *     tags:
+ *       - Intents
+ *     description: Returns unscheduled intent.
+ *     parameters:
+ *     responses:
+ *       200:
+ *         description: Successful response with buyer's intent details.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
+ *               description: A list of all the unscheduled.
+ *               items:
+ *                 type: object
+ *                 properties:
+ *                   name:
+ *                     type: string
+ *                     description: The partner's name.
+ *                     example: John Doe
+ *                   email:
+ *                     type: string
+ *                     description: The partner's email.
+ *                     example: john.doe@example.com
+ *                   phone:
+ *                     type: string
+ *                     description: The partner's phone number.
+ *                     example: +34 434343 4343 4343 4
+ */
+
 intentRoute.route("/buyer/unscheduled").get(getUnscheduledPickups);
 intentRoute
   .route("/buyer/:id")
@@ -493,4 +529,62 @@ intentRoute
   .get(getSellerIntent)
   .patch(patchSellerIntentController);
 
+
+
+
+/**
+ * @swagger
+ * /intent/seller/buyer/{id}:
+ *   get:
+ *     summary: Get the details of a seller intent using the buyer's Id.
+ *     tags:
+ *       - Intents
+ *     description: Edit the information of a seller's intent.
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         schema:
+ *           type: string
+ *         required: true
+ *         description: The ID of the buyer's intent which details are to be edited
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               name:
+ *                 type: string
+ *                 description: The seller's name.
+ *                 example: John Doe
+ *               email:
+ *                 type: string
+ *                 description: The seller's email.
+ *                 example: john.doe@example.com
+ *               phone:
+ *                 type: string
+ *                 description: The seller's phone number.
+ *                 example: +34 434343 4343 4343 4
+ *               location:
+ *                 type: string
+ *                 description: The address of the seller.
+ *                 example: some place on earth
+ *               lng:
+ *                 type: number
+ *                 description: The longitude of the seller's location.
+ *                 example: 20.0001
+ *               lat:
+ *                 type: number
+ *                 description: The latitude of the seller's location.
+ *                 example: 19.0002
+ *     responses:
+ *       404:
+ *         description: Seller intent not found
+ *       200:
+ *         description: Seller's intent edited successfully
+ *       501:
+ *         description: Internal server error
+ */
+intentRoute.route("/seller/buyer/:id").get(getSellIntentForBuyer);
 export default intentRoute;
