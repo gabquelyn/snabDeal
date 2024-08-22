@@ -1,10 +1,10 @@
 import mongoose, { Schema } from "mongoose";
 const testimonialSchema = new mongoose.Schema(
   {
-    pickup: {
+    delivery: {
       type: Schema.Types.ObjectId,
       required: true,
-      ref: "Pickup",
+      ref: "Delivery",
       unique: true,
     },
     name: {

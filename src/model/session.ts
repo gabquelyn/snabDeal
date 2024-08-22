@@ -4,10 +4,10 @@ const stripeSessionSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
-  buyerIntent: {
+  deliveryId: {
     type: mongoose.Schema.Types.ObjectId,
     required: true,
-    ref: "BuyerIntent",
+    ref: "Delivery",
     unique: true,
   },
 });

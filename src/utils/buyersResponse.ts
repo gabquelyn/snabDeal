@@ -8,11 +8,8 @@ export default async function buyersResponse(
   price: number,
   name: string,
   idempotencyKey: string,
-  phone: string,
-  tag: string,
-  partnerId?: string
+  tag?: string
 ): Promise<string | null | undefined> {
-  
   // instantiate Stripe
   const stripe = new Stripe(process.env.STRIPE_API_KEY!, {
     apiVersion: "2024-06-20",
@@ -25,7 +22,8 @@ export default async function buyersResponse(
       price_data: {
         currency: "usd",
         product_data: {
-          name: tag,
+          name: name,
+          item: tag,
         },
         unit_amount: Math.round(price + (distance > 6 ? 12 : 5)) * 100,
       },
@@ -37,26 +35,22 @@ export default async function buyersResponse(
     const session = await stripe.checkout.sessions.create({
       line_items: priceDetails,
       mode: "payment",
-      success_url: `${process.env.FRONTEND_URL}/confirmation/${idempotencyKey}${
-        partnerId ? `?id=${partnerId}` : ""
-      }`,
-      cancel_url: `${process.env.FRONTEND_URL}/${
-        partnerId ? `?id=${partnerId}` : ""
-      }`,
+      success_url: `${process.env.FRONTEND_URL}/confirmation/${idempotencyKey}`,
+      cancel_url: `${process.env.FRONTEND_URL}/`,
     });
     const previousSession = await Session.findOne({
-      buyerIntent: idempotencyKey,
+      deliveryId: idempotencyKey,
     }).exec();
     if (previousSession) await previousSession.deleteOne();
     await Session.create({
       sessionId: session.id,
-      buyerIntent: idempotencyKey,
+      deliveryId: idempotencyKey,
     });
-    console.log(session.url);
-    await sendTextMessage(
-      `Hi ${name},\tThe seller has successfully scheduled your order for ${tag}! 🎉\nTo complete your purchase and arrange for swift delivery, please follow the link below to view the order summary and make your payment:\t${session.url}\tThank you for using SnabbDeal! If you have any questions, feel free to reach out.\tBest,The SnabbDeal Team`,
-      phone
-    );
+    // console.log(session.url);
+    // await sendTextMessage(
+    //   `Hi ${name},\tThe seller has successfully scheduled your order for ${tag}! 🎉\nTo complete your purchase and arrange for swift delivery, please follow the link below to view the order summary and make your payment:\t${session.url}\tThank you for using SnabbDeal! If you have any questions, feel free to reach out.\tBest,The SnabbDeal Team`,
+    //   phone
+    // );
     return session.url;
   } catch (err) {
     console.log(err);

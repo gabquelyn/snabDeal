@@ -2,8 +2,7 @@ import expressAsyncHandler from "express-async-handler";
 import { Request, Response } from "express";
 import { validationResult } from "express-validator";
 import Testimonial from "../model/testimonial";
-import Pickup from "../model/pickup";
-
+import Delivery from "../model/delivery";
 
 export const getTestimonials = expressAsyncHandler(
   async (req: Request, res: Response): Promise<any> => {
@@ -18,9 +17,9 @@ export const createTestimonials = expressAsyncHandler(
     if (!result.isEmpty()) return res.status(500).json(result.array());
     const { name, testimonial, email, feedback } = req.body;
     const { id } = req.params;
-    const exisitingPickup = await Pickup.findById(id).lean().exec();
-    if (!exisitingPickup)
-      return res.status(404).json({ message: "Pickup not found" });
+    const existingDelivery = await Delivery.findById(id).lean().exec();
+    if (!existingDelivery)
+      return res.status(404).json({ message: "Delivery not found" });
     await Testimonial.create({
       name,
       testimonial,
