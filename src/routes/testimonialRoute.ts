@@ -102,7 +102,7 @@ testimonialRoutes.route("/").get(getTestimonials);
  *         description: Review submitted successfully
  */
 testimonialRoutes
-  .route("/:id")
+  .route("/:deliveryId")
   .post(
     [
       body("name").notEmpty(),

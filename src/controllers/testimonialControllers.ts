@@ -16,8 +16,8 @@ export const createTestimonials = expressAsyncHandler(
     const result = validationResult(req.body);
     if (!result.isEmpty()) return res.status(500).json(result.array());
     const { name, testimonial, email, feedback } = req.body;
-    const { id } = req.params;
-    const existingDelivery = await Delivery.findById(id).lean().exec();
+    const { deliveryId } = req.params;
+    const existingDelivery = await Delivery.findById(deliveryId).lean().exec();
     if (!existingDelivery)
       return res.status(404).json({ message: "Delivery not found" });
     await Testimonial.create({
