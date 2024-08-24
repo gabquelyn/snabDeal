@@ -62,6 +62,10 @@ export const confirmDelivery = expressAsyncHandler(
     if (_session.payment_status === "paid") {
       existingDelivery.paid = true;
       await existingDelivery.save();
+      await sendTextMessage(
+        `Hello \nGood news! A buyer has requested delivery for the item you're selling on (e.g., Facebook Marketplace, Craigslist, etc.). \tOrder Details \nItem: ${existingDelivery.item?.note}\n Pick-up Address: ${existingDelivery.seller?.address?.location} \nDelivery Address: $${existingDelivery.buyer?.address?.location}\nScheduled Pick-up Time: ${existingDelivery.seller?.date} ${existingDelivery.seller?.time} If you have any questions or need assistance, feel free to contact our support team.Thank you for using Snabdeal!`,
+        existingDelivery.seller!.phone
+      );
     }
     return res.status(200).json({ message: "Payment confirmed", deliveryId });
   }

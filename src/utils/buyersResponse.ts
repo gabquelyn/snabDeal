@@ -1,5 +1,4 @@
 import calculateDistance from "../utils/calculateDistance";
-import sendTextMessage from "./sendTextMessage";
 import Stripe from "stripe";
 import Session from "../model/session";
 export default async function buyersResponse(
@@ -25,7 +24,7 @@ export default async function buyersResponse(
           name: name,
           item: tag,
         },
-        unit_amount: Math.round(price + (distance > 6 ? 12 : 5)) * 100,
+        unit_amount: Math.round(price + (distance > 10 ? 12 : 5)) * 100,
       },
       quantity: 1,
     },
@@ -46,11 +45,6 @@ export default async function buyersResponse(
       sessionId: session.id,
       deliveryId: idempotencyKey,
     });
-    // console.log(session.url);
-    // await sendTextMessage(
-    //   `Hi ${name},\tThe seller has successfully scheduled your order for ${tag}! 🎉\nTo complete your purchase and arrange for swift delivery, please follow the link below to view the order summary and make your payment:\t${session.url}\tThank you for using SnabbDeal! If you have any questions, feel free to reach out.\tBest,The SnabbDeal Team`,
-    //   phone
-    // );
     return session.url;
   } catch (err) {
     console.log(err);
