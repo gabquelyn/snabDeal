@@ -105,9 +105,16 @@ export const editDelivery = expressAsyncHandler(
 
 export const changeStatus = expressAsyncHandler(
   async (req: Request, res: Response): Promise<any> => {
+    type acceptedStatus = "onroute" | "delivered" | "arrived" | "picked";
     const { deliveryId } = req.params;
-    const { status } = req.body;
-    if (!["onroute", "delivered"].includes(status)) {
+    const { status }: { status: acceptedStatus } = req.body;
+    const statusArray: acceptedStatus[] = [
+      "onroute",
+      "delivered",
+      "picked",
+      "arrived",
+    ];
+    if (!statusArray.includes(status)) {
       return res.status(400).json({ message: "Bad status of pickup" });
     }
     const delivery = await Delivery.findById(deliveryId).exec();
@@ -154,6 +161,33 @@ export const changeStatus = expressAsyncHandler(
 
     delivery.status = status;
     await delivery.save();
+
+    // send text messages based on respective roles
+    if (status === "onroute") {
+      await sendTextMessage(
+        `Hi,\tGreat news! Your SnabbDeal pickup driver is on the way to collect your item. You'll receive payment via your chosen method once the item is picked up. \nThank you for using SnabbDeal!`,
+        delivery.seller!.phone
+      );
+    }
+
+    if (status === "arrived") {
+      await sendTextMessage(
+        `Hi, \tYour SnabbDeal driver has arrived to pick up your item. Please be ready with the item for a smooth handover. Payment will be processed shortly after pickup. \nThank you for using SnabbDeal!`,
+        delivery.seller!.phone
+      );
+    }
+
+    if (status === "picked") {
+      await sendTextMessage(
+        `Hi ${
+          delivery.buyer!.name
+        }, \tYour package has been picked up successfully by the SnabbDeal driver. You can now track its here: https://www.snabbdeal.com/track with tracking Id ${
+          delivery._id
+        }. \nThank you for choosing SnabbDeal for your delivery!`,
+        delivery.buyer!.phone
+      );
+    }
+
     return res
       .status(200)
       .json({ message: `Delivery ${deliveryId} status changed to ${status}` });
