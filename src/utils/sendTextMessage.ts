@@ -1,6 +1,6 @@
 import twilio from "twilio";
 import dotenv from "dotenv";
-import * as api from "clicksend/api";
+import * as api from "clicksend/api.js";
 dotenv.config();
 
 export default async function sendTextMessage(body: string, to: string) {
