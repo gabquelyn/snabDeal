@@ -115,7 +115,7 @@ export const changeStatus = expressAsyncHandler(
       "arrived",
     ];
     if (!statusArray.includes(status)) {
-      return res.status(400).json({ message: "Bad status of pickup" });
+      return res.status(400).json({ message: "Invalid status of pickup" });
     }
     const delivery = await Delivery.findById(deliveryId).exec();
     if (!delivery)

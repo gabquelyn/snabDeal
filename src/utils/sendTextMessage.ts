@@ -1,5 +1,5 @@
 import dotenv from "dotenv";
-import * as api from "clicksend/api.js";
+import * as api from "clicksend/api";
 dotenv.config();
 
 export default async function sendTextMessage(body: string, to: string) {
@@ -14,12 +14,10 @@ export default async function sendTextMessage(body: string, to: string) {
 
   const smsCollection = new api.SmsMessageCollection();
   smsCollection.messages = [smsMessage];
-  smsApi
-    .smsSendPost(smsCollection)
-    .then((res: Record<string, any>) => {
-      console.log(res);
-    })
-    .catch((err: any) => {
-      console.log(err);
-    });
+  try {
+    const res = await smsApi.smsSendPost(smsCollection);
+    console.log(res);
+  } catch (err) {
+    console.log(err);
+  }
 }
