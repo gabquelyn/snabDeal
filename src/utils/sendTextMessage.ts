@@ -16,7 +16,7 @@ export default async function sendTextMessage(body: string, to: string) {
   smsCollection.messages = [smsMessage];
   try {
     const res = await smsApi.smsSendPost(smsCollection);
-    console.log(res);
+    console.log("Success", res);
   } catch (err) {
     console.log(err);
   }
