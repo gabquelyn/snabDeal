@@ -14,10 +14,12 @@ export default async function sendTextMessage(body: string, to: string) {
 
   const smsCollection = new api.SmsMessageCollection();
   smsCollection.messages = [smsMessage];
-  try {
-    const res = await smsApi.smsSendPost(smsCollection);
-    console.log("Success", res);
-  } catch (err) {
-    console.log(err);
-  }
+  smsApi
+    .smsSendPost(smsCollection)
+    .then((data) => {
+      console.log("Success", data);
+    })
+    .catch((err) => {
+      console.log(err);
+    });
 }
