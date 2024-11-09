@@ -11,6 +11,7 @@ import deliveryRoutes from "./routes/deliveryRoute";
 import swaggerJSDoc from "swagger-jsdoc";
 import swaggerUi from "swagger-ui-express";
 import testimonialRoutes from "./routes/testimonialRoute";
+import saleRoutes from "./routes/saleRoute";
 
 const swaggerDefinition = {
   openapi: "3.0.0",
@@ -62,6 +63,7 @@ app.use(cookierParser());
 
 app.use("/delivery", deliveryRoutes);
 app.use("/testimonial", testimonialRoutes);
+app.use("/sale", saleRoutes);
 
 app.use("/", swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 

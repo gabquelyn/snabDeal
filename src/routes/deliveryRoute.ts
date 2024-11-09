@@ -1,11 +1,14 @@
 import { Router } from "express";
 import {
+  createSaleDelivery,
   createDelivery,
   confirmDelivery,
   getIndividualDelivery,
   getAllDeliveries,
   editDelivery,
   changeStatus,
+  getAllSaleDeliveries,
+  getIndividualSaleDelivery,
 } from "../controllers/deliveryController";
 import { body } from "express-validator";
 import Multer from "multer";
@@ -263,52 +266,36 @@ const deliveryRoutes = Router();
  *         description: Internal server error.
  */
 
+deliveryRoutes.route("/sales").get(getAllSaleDeliveries);
 deliveryRoutes
-  .route("/")
+  .route("/sales/:deliveryId")
+  .get(getIndividualSaleDelivery)
+  .patch();
+
+deliveryRoutes
+  .route("/:saleId")
   .post(
     [
-      // buyer information
-      body("buyer.name").notEmpty().withMessage("Name cannot be empty"),
-      body("buyer.email").isEmail().withMessage("Invalid buyer email"),
-      body("buyer.phone")
-        .isMobilePhone("any")
-        .withMessage("Invalid buyer number"),
-      body("buyer.address.location")
-        .isEmpty()
-        .withMessage("Invalid buyer location"),
-      body("buyer.address.lng")
-        .isEmpty()
-        .withMessage("Invalid buyer longitude"),
-      body("buyer.address.lat").isEmpty().withMessage("Invalid buyer latitude"),
-
-      // seller information
-      body("seller.date").isDate().withMessage("Enter a valid date"),
-      body("seller.time")
+      body("time")
         .isTime({ mode: "default" })
         .withMessage("Enter a valid time"),
-      body("seller.phone")
-        .isMobilePhone("any")
-        .withMessage("Enter a valid phone number"),
-      body("seller.address.location")
-        .isEmpty()
-        .withMessage("Invalid seller location"),
-      body("seller.address.lng")
-        .isEmpty()
-        .withMessage("Invalid seller longitude"),
-      body("seller.address.lat")
-        .isEmpty()
-        .withMessage("Invalid seller latitude"),
-      body("seller.paymentMethod")
-        .isEmpty()
-        .withMessage("Invalid payment method"),
-
-      // item information
-      body("item.price").isNumeric().withMessage("Enter a valid price"),
-      body("item.link").isURL().withMessage("Enter a valid product url"),
+      body("address.location")
+        .notEmpty()
+        .withMessage("Address location required"),
+      body("address.lat")
+        .notEmpty()
+        .isNumeric()
+        .withMessage("Address lat required"),
+      body("address.lng")
+        .notEmpty()
+        .isNumeric()
+        .withMessage("Address lng required"),
+      body("items").isArray().withMessage("Items cannot be empty"),
+      body("phone").isMobilePhone("any").withMessage("Invalid buyer number"),
+      body("name").notEmpty().withMessage("Sale name is required"),
     ],
-    createDelivery
-  )
-  .get(getAllDeliveries);
+    createSaleDelivery
+  );
 
 /**
  * @swagger
@@ -338,6 +325,55 @@ deliveryRoutes
  */
 
 deliveryRoutes.route("/confirm/:deliveryId").get(confirmDelivery);
+/**
+ * @swagger
+ * /delivery/status/{id}:
+ *   patch:
+ *     summary: Updates the delivery status and uploads a proof file.
+ *     tags:
+ *       - Delivery
+ *     description: Updates the status of a specific delivery and allows for uploading a proof file.
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: The unique identifier of the delivery.
+ *         example: "64c71b8f8e4eabc123456789"
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         multipart/form-data:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               proof:
+ *                 type: string
+ *                 format: binary
+ *                 description: The file containing proof of delivery.
+ *                 example: file.pdf
+ *               status:
+ *                 type: string
+ *                 description: The new status of the delivery.
+ *                 enum:
+ *                   - onroute
+ *                   - delivered
+ *                 example: "delivered"
+ *     responses:
+ *       200:
+ *         description: Successfully updated the delivery.
+ *       400:
+ *         description: Bad request, possibly due to invalid file format or missing parameters.
+ *       404:
+ *         description: Delivery not found.
+ *       500:
+ *         description: Internal server error.
+ */
+
+deliveryRoutes
+  .route("/status/:deliveryId")
+  .patch(upload.single("proof"), changeStatus);
 
 /**
  * @swagger
@@ -474,99 +510,39 @@ deliveryRoutes.route("/confirm/:deliveryId").get(confirmDelivery);
  *         description: Internal server error
  */
 deliveryRoutes
-  .route("/:deliveryId")
-  .get(getIndividualDelivery)
-  .patch(
+  .route("/")
+  .get(getAllDeliveries)
+  .post(
     [
-      // buyer information
-      body("buyer.name").notEmpty().withMessage("Name cannot be empty"),
-      body("buyer.email").isEmail().withMessage("Invalid buyer email"),
-      body("buyer.phone")
-        .isMobilePhone("any")
-        .withMessage("Invalid buyer number"),
-      body("buyer.address.location")
-        .isEmpty()
-        .withMessage("Invalid buyer location"),
-      body("buyer.address.lng")
-        .isEmpty()
-        .withMessage("Invalid buyer longitude"),
-      body("buyer.address.lat").isEmpty().withMessage("Invalid buyer latitude"),
-
-      // seller information
-      body("seller.date").isDate().withMessage("Enter a valid date"),
-      body("seller.time")
-        .isTime({ mode: "default" })
-        .withMessage("Enter a valid time"),
-      body("seller.phone")
-        .isMobilePhone("any")
-        .withMessage("Enter a valid phone number"),
-      body("seller.address.location")
-        .isEmpty()
-        .withMessage("Invalid seller location"),
-      body("seller.address.lng")
-        .isEmpty()
-        .withMessage("Invalid seller longitude"),
-      body("seller.address.lat")
-        .isEmpty()
-        .withMessage("Invalid seller latitude"),
-      body("seller.paymentMethod")
-        .isEmpty()
-        .withMessage("Invalid payment method"),
-
-      // item information
-      body("item.price").isNumeric().withMessage("Enter a valid price"),
-      body("item.link").isURL().withMessage("Enter a valid product url"),
+      body("date").isDate().withMessage("Enter a valid date"),
+      body("pickup.location")
+        .notEmpty()
+        .withMessage("Pickup location required"),
+      body("pickup.lat")
+        .notEmpty()
+        .isNumeric()
+        .withMessage("Pickup lat required"),
+      body("pickup.lng")
+        .notEmpty()
+        .isNumeric()
+        .withMessage("Pickup lng required"),
+      body("dropOff.location")
+        .notEmpty()
+        .withMessage("DropOff location required"),
+      body("dropOff.lat")
+        .notEmpty()
+        .isNumeric()
+        .withMessage("DropOff lat required"),
+      body("dropOff.lng")
+        .notEmpty()
+        .isNumeric()
+        .withMessage("DropOff lng required"),
+      body("items").isArray().withMessage("Items cannot be empty"),
+      body("phone").isMobilePhone("any").withMessage("Invalid buyer number"),
+      body("name").notEmpty().withMessage("Sale name is required"),
     ],
-    editDelivery
+    createDelivery
   );
+deliveryRoutes.route("/:deliveryId").get(getIndividualDelivery).patch();
 
-/**
- * @swagger
- * /delivery/status/{id}:
- *   patch:
- *     summary: Updates the delivery status and uploads a proof file.
- *     tags:
- *       - Delivery
- *     description: Updates the status of a specific delivery and allows for uploading a proof file.
- *     parameters:
- *       - in: path
- *         name: id
- *         required: true
- *         schema:
- *           type: string
- *         description: The unique identifier of the delivery.
- *         example: "64c71b8f8e4eabc123456789"
- *     requestBody:
- *       required: true
- *       content:
- *         multipart/form-data:
- *           schema:
- *             type: object
- *             properties:
- *               proof:
- *                 type: string
- *                 format: binary
- *                 description: The file containing proof of delivery.
- *                 example: file.pdf
- *               status:
- *                 type: string
- *                 description: The new status of the delivery.
- *                 enum:
- *                   - onroute
- *                   - delivered
- *                 example: "delivered"
- *     responses:
- *       200:
- *         description: Successfully updated the delivery.
- *       400:
- *         description: Bad request, possibly due to invalid file format or missing parameters.
- *       404:
- *         description: Delivery not found.
- *       500:
- *         description: Internal server error.
- */
-
-deliveryRoutes
-  .route("/status/:deliveryId")
-  .patch(upload.single("proof"), changeStatus);
 export default deliveryRoutes;
