@@ -36,6 +36,10 @@ const swaggerDefinition = {
       description: "Operations about buyers delivery",
     },
     {
+      name: "Sales",
+      description: "Operations about garage or home sales",
+    },
+    {
       name: "Testimonial",
       description: "Operations about testimonials",
     },
