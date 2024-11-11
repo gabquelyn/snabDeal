@@ -33,8 +33,12 @@ const deliveryRoutes = Router();
  *             properties:
  *               name:
  *                 type: string
- *                 description: The buyer's name.
+ *                 description: The buyer's name/ store name / platform name.
  *                 example: John Doe
+ *               date:
+ *                 type: string
+ *                 description: The date of the dropOff.
+ *                 example: 12-08-2024
  *               phone:
  *                 type: string
  *                 description: The buyer's phone number.
