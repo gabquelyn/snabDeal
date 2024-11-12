@@ -306,6 +306,7 @@ export const createDelivery = expressAsyncHandler(
       items,
       date,
       note,
+      time,
     }: { [key: string]: any; pickup: Position; dropOff: Position } = req.body;
     const distance = calculateDistance(pickup, dropOff);
     let productData: Stripe.Checkout.SessionCreateParams.LineItem[] = [
@@ -330,7 +331,8 @@ export const createDelivery = expressAsyncHandler(
       date,
       note,
       pickup,
-      dropOff
+      time,
+      dropOff,
     });
 
     const url = await buyersResponse(

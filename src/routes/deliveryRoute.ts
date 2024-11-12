@@ -39,6 +39,10 @@ const deliveryRoutes = Router();
  *                 type: string
  *                 description: The date of the dropOff.
  *                 example: 12-08-2024
+ *               time:
+ *                 type: string
+ *                 description: The date of the dropOff.
+ *                 example: 12:08
  *               phone:
  *                 type: string
  *                 description: The buyer's phone number.
@@ -100,7 +104,7 @@ const deliveryRoutes = Router();
  *           application/json:
  *             schema:
  *               type: object
- *               properties: 
+ *               properties:
  *                 url:
  *                   type: string
  *                   description: Checkout URL for payment.
@@ -110,7 +114,6 @@ const deliveryRoutes = Router();
  *       500:
  *         description: Internal server error.
  */
-
 
 /**
  * @swagger
@@ -192,7 +195,6 @@ const deliveryRoutes = Router();
  *         description: Internal server error.
  */
 
-
 /**
  * @swagger
  * /delivery/{saleId}:
@@ -246,12 +248,12 @@ const deliveryRoutes = Router();
  *                 type: array
  *                 items:
  *                   type: object
- *                   properties: 
- *                     itemId: 
+ *                   properties:
+ *                     itemId:
  *                       type: string
  *                       description: The identifier of the item to be delivered.
  *                       example: 672fe7d09241c7ca4a522867
- *                     quantity: 
+ *                     quantity:
  *                       type: number
  *                       description: The quantity of the item to be delivered.
  *                       example: 2
@@ -262,7 +264,7 @@ const deliveryRoutes = Router();
  *           application/json:
  *             schema:
  *               type: object
- *               properties: 
+ *               properties:
  *                 url:
  *                   type: string
  *                   description: Checkout URL for payment.
@@ -326,12 +328,12 @@ const deliveryRoutes = Router();
  *                     type: array
  *                     items:
  *                       type: object
- *                       properties: 
- *                         itemId: 
+ *                       properties:
+ *                         itemId:
  *                           type: string
  *                           description: The identifier of the item to be delivered.
  *                           example: 672fe7d09241c7ca4a522867
- *                         quantity: 
+ *                         quantity:
  *                           type: number
  *                           description: The quantity of the item to be delivered.
  *                           example: 2
@@ -397,12 +399,12 @@ const deliveryRoutes = Router();
  *                   type: array
  *                   items:
  *                     type: object
- *                     properties: 
- *                       itemId: 
+ *                     properties:
+ *                       itemId:
  *                         type: string
  *                         description: The identifier of the item to be delivered.
  *                         example: 672fe7d09241c7ca4a522867
- *                       quantity: 
+ *                       quantity:
  *                         type: number
  *                         description: The quantity of the item to be delivered.
  *                         example: 2
@@ -411,8 +413,6 @@ const deliveryRoutes = Router();
  *       500:
  *         description: Internal server error.
  */
-
-
 
 deliveryRoutes.route("/sales").get(getAllSaleDeliveries);
 deliveryRoutes
@@ -610,14 +610,13 @@ deliveryRoutes
  *         description: Internal server error.
  */
 
-
-
 deliveryRoutes
   .route("/")
   .get(getAllDeliveries)
   .post(
     [
       body("date").isDate().withMessage("Enter a valid date"),
+      body("time").isTime({mode: "default"}).withMessage("Enter a valid time"),
       body("pickup.location")
         .notEmpty()
         .withMessage("Pickup location required"),

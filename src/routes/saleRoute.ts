@@ -1,8 +1,9 @@
 import { Router } from "express";
 import { createSale, getASale, getSales } from "../controllers/saleController";
 import { body } from "express-validator";
+import Multer from "multer";
+const upload = Multer({ dest: "/tmp" });
 const saleRoutes = Router();
-
 
 /**
  * @swagger
@@ -11,11 +12,11 @@ const saleRoutes = Router();
  *     summary: Creates a new garage or house sale.
  *     tags:
  *       - Sales
- *     description: Operations about garage or home sales
+ *     description: Operations about garage or home sales.
  *     requestBody:
  *       required: true
  *       content:
- *         application/json:
+ *         multipart/form-data:
  *           schema:
  *             type: object
  *             properties:
@@ -48,44 +49,50 @@ const saleRoutes = Router();
  *                 properties:
  *                   location:
  *                     type: string
- *                     description: The location of the sales location.
+ *                     description: Location of the sales location.
  *                     example: Texas
  *                   lat:
  *                     type: number
- *                     description: The latitude of the sales location.
+ *                     description: Latitude of the sales location.
  *                     example: -23.0
  *                   lng:
  *                     type: number
- *                     description: The longitude of the sales location.
+ *                     description: Longitude of the sales location.
  *                     example: -24.0
- *               posterImage: 
+ *               posterImage:
  *                 type: string
- *                 format: base64
- *                 description: The base64 URL of the image file.
+ *                 format: binary
+ *                 description: Image file for the poster.
+ *               itemImages:
+ *                 type: array
+ *                 items:
+ *                   type: string
+ *                   format: binary
+ *                 description: Array of item image files.
  *               items:
  *                 type: array
  *                 items:
  *                   type: object
- *                   properties: 
- *                     name: 
+ *                   properties:
+ *                     name:
  *                       type: string
- *                       description: The name of the item to be sold.
+ *                       description: Name of the item to be sold.
  *                       example: spoon
- *                     price: 
+ *                     price:
  *                       type: number
- *                       description: The price of the item to be sold in USD.
+ *                       description: Price of the item to be sold in USD.
  *                       example: 23
- *                     image: 
- *                       type: string
- *                       format: base64
- *                       description: The base64 of the image of the item to be sold.
- *                       example: reeAAAAA
  *     responses:
  *       201:
  *         description: Successfully created a sale.
+ *       400:
+ *         description: Bad request.
+ *       422:
+ *         description: Unprocessable entity.
  *       500:
  *         description: Internal server error.
  */
+
 
 /**
  * @swagger
@@ -144,7 +151,7 @@ const saleRoutes = Router();
  *                         type: number
  *                         description: The longitude of the sales location.
  *                         example: -24.0
- *                   posterImage: 
+ *                   posterImage:
  *                     type: string
  *                     format: base64
  *                     description: The base64 URL of the image file.
@@ -152,16 +159,16 @@ const saleRoutes = Router();
  *                     type: array
  *                     items:
  *                       type: object
- *                       properties: 
- *                         name: 
+ *                       properties:
+ *                         name:
  *                           type: string
  *                           description: The name of the item to be sold.
  *                           example: spoon
- *                         price: 
+ *                         price:
  *                           type: number
  *                           description: The price of the item to be sold in USD.
  *                           example: 23
- *                         image: 
+ *                         image:
  *                           type: string
  *                           format: base64
  *                           description: The base64 of the image of the item to be sold.
@@ -232,7 +239,7 @@ const saleRoutes = Router();
  *                       type: number
  *                       description: The longitude of the sales location.
  *                       example: -24.0
- *                 posterImage: 
+ *                 posterImage:
  *                   type: string
  *                   format: base64
  *                   description: The base64 URL of the image file.
@@ -240,16 +247,16 @@ const saleRoutes = Router();
  *                   type: array
  *                   items:
  *                     type: object
- *                     properties: 
- *                       name: 
+ *                     properties:
+ *                       name:
  *                         type: string
  *                         description: The name of the item to be sold.
  *                         example: spoon
- *                       price: 
+ *                       price:
  *                         type: number
  *                         description: The price of the item to be sold in USD.
  *                         example: 23
- *                       image: 
+ *                       image:
  *                         type: string
  *                         format: base64
  *                         description: The base64 of the image of the item to be sold.
@@ -260,11 +267,15 @@ const saleRoutes = Router();
  *         description: Internal server error.
  */
 
-
 saleRoutes
   .route("/")
   .post(
     [
+      upload.fields([
+        { name: "posterImage", maxCount: 1 },
+        { name: "itemImages" },
+      ]),
+
       body("name").notEmpty().withMessage("Sale name is required"),
       body("type").notEmpty().withMessage("Sale type is required"),
       body("paymentMethod")
@@ -275,19 +286,6 @@ saleRoutes
       body("time")
         .isTime({ mode: "default" })
         .withMessage("Enter a valid time"),
-      body("address.location")
-        .notEmpty()
-        .withMessage("Address location required"),
-      body("address.lat")
-        .notEmpty()
-        .isNumeric()
-        .withMessage("Address lat required"),
-      body("address.lng")
-        .notEmpty()
-        .isNumeric()
-        .withMessage("Address lng required"),
-      body("posterImage").notEmpty().isBase64().withMessage("invalid image string"),
-      body("items").isArray().withMessage("Items cannot be empty"),
     ],
     createSale
   )

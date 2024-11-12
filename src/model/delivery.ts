@@ -67,6 +67,11 @@ const deliverySchema = new mongoose.Schema(
       type: Date,
     },
 
+    time: {
+      required: true,
+      type: String,
+    },
+
     note: {
       required: true,
       type: String,
