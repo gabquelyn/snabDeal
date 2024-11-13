@@ -60,9 +60,11 @@ const saleRoutes = Router();
  *                     description: Longitude of the sales location.
  *                     example: -24.0
  *               posterImage:
- *                 type: string
- *                 format: binary
- *                 description: Image file for the poster.
+ *                 type: array
+ *                 items:
+ *                   type: string
+ *                   format: binary
+ *                 description: Array of item image files.
  *               itemImages:
  *                 type: array
  *                 items:
