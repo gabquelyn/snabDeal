@@ -14,11 +14,12 @@ export const createSale = expressAsyncHandler(
       [fieldname: string]: Express.Multer.File[];
     };
 
-    if (!uploadedImages.posterImage || !uploadedImages.itemImages)
+    if (!uploadedImages.posterImage || !uploadedImages.itemImages) {
+      console.log(uploadedImages);
       return res
         .status(400)
         .json({ message: "Poster or item image of sale missing" });
-
+    }
     // initiate cloudinary
     cloudinary.config({
       cloud_name: process.env.CLOUDINARY_NAME,
