@@ -34,7 +34,7 @@ export const createSale = expressAsyncHandler(
     );
     unlinkFile(uploadedImages.posterImage[0].path);
 
-    const { type, name, phone, address, date, paymentMethod, items } = req.body;
+    const { type, name, phone, address, date, paymentMethod, items, time } = req.body;
 
     // parse the items array and put the images url in them.
     const parsedItems: [{ name: string; price: number }] = JSON.parse(items);
@@ -82,6 +82,7 @@ export const createSale = expressAsyncHandler(
       paymentMethod,
       posterImage: result.secure_url,
       items: itemsWithImageUrl,
+      time
     });
 
     return res.status(201).json({ message: "Sale created successfully" });

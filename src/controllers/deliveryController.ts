@@ -301,6 +301,7 @@ export const createDelivery = expressAsyncHandler(
       platform,
       pickup,
       dropOff,
+      _name,
       name,
       phone,
       items,
@@ -331,6 +332,7 @@ export const createDelivery = expressAsyncHandler(
       date,
       note,
       pickup,
+      _name,
       time,
       dropOff,
     });

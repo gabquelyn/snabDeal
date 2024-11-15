@@ -33,8 +33,12 @@ const deliveryRoutes = Router();
  *             properties:
  *               name:
  *                 type: string
- *                 description: The buyer's name/ store name / platform name.
+ *                 description: The buyer's name.
  *                 example: John Doe
+ *               _name:
+ *                 type: string
+ *                 description: The store name / platform name.
+ *                 example: Xolo stores
  *               date:
  *                 type: string
  *                 description: The date of the dropOff.
