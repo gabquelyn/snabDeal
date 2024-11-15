@@ -620,7 +620,7 @@ deliveryRoutes
   .post(
     [
       body("date").isDate().withMessage("Enter a valid date"),
-      body("note").isDate().withMessage("Enter a valid note"),
+      body("note").notEmpty().withMessage("Enter a valid note"),
       body("time").isTime({mode: "default"}).withMessage("Enter a valid time"),
       body("pickup.location")
         .notEmpty()
